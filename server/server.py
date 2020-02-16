@@ -39,7 +39,6 @@ def client_communication(person):
 
     #get persons name
     client_name = client.recv(BUFSIZ).decode("utf8")
-    print(f"{client_name}: ", client_name)
     welcome = bytes(f"Welcome {client_name}!To quit chat, enter quit.\n", "utf8")
     joined = bytes(f"{client_name}has joined the chat!\n", "utf8")
     client.send(welcome)
@@ -48,14 +47,15 @@ def client_communication(person):
     while True:
         try:
             msg = client.recv(BUFSIZ).decode("utf8")
-            if msg == bytes("quit", "utf8"):
+            if msg == 'quit\r\n':
                 client.send(bytes("{quit}", "utf8"))
-                broadcast(bytes(f"{client_name} has left the chat.\n", client_name))
+                broadcast(bytes(f"{client_name} has left the chat.\n", "utf8"), client_name)
                 client.close()
                 persons.remove(person)
+                print(f"[DISCONNECTED] {name}")
                 break
             else:
-                broadcast(bytes(msg, "utf8"), client_name)
+                broadcast(bytes(msg, "utf8"), client_name + ": ")
         except Exception as e:
             print("[EXCEPTION]", e)
             break
