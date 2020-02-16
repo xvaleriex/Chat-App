@@ -40,15 +40,15 @@ def client_communication(person):
     #get persons name
     client_name = client.recv(BUFSIZ).decode("utf8")
     print(f"{client_name}: ", client_name)
-    welcome = bytes(f"Welcome {client_name}! To quit chat, enter quit.\n", "utf8")
-    joined = bytes(f"{client_name} has joined the chat!\n", "utf8")
+    welcome = bytes(f"Welcome {client_name}!To quit chat, enter quit.\n", "utf8")
+    joined = bytes(f"{client_name}has joined the chat!\n", "utf8")
     client.send(welcome)
     broadcast(joined, "") #broadcast welcome message
 
     while True:
         try:
             msg = client.recv(BUFSIZ).decode("utf8")
-            if msg == bytes("{quit}", "utf8"):
+            if msg == bytes("quit", "utf8"):
                 client.send(bytes("{quit}", "utf8"))
                 broadcast(bytes(f"{client_name} has left the chat.\n", client_name))
                 client.close()
