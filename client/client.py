@@ -25,7 +25,7 @@ class Client:
         self.client_socket = socket(AF_INET, SOCK_STREAM)
         self.client_socket.connect(self.ADDR)
         self.messages = []
-        receive_thread = Thread(target=self.recieve_messages)
+      
         receive_thread.start()
         self.send_message(name)
         self.lock = Lock()
@@ -37,6 +37,8 @@ class Client:
         while True:
             try:
                 msg = self.client_socket.recv(self.BUFSIZ).decode("utf8")
+
+                #make sure memory is safe to access
                 self.lock.acquire()
                 self.messages.append(msg)
                 self.lock.release()
@@ -59,9 +61,12 @@ class Client:
         Return list of messages
         :return: list[]
         """
+        messages_copy = self.messages[:]
+        #make sure memory is safe to access
         self.lock.acquire()
+        self.messages = []
         self.lock.release()
-        return self.messages
+        return messages_copy
 
     def disconnect(self):
-    	self.send_message(bytes("quit", "utf8")
+    	self.send_message("quit")
