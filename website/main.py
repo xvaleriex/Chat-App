@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 app.secret_key = "hellomynameisvalandyouwontguessthis"
 
-session[NAME_KEY] = "val"
+# session[NAME_KEY] = "val"
 """
 @app.route("/login")
 def login():
@@ -22,11 +22,11 @@ def logout():
 @app.route("/")
 @app.route("/home")
 def home():
-    if NAME_KEY not in session:
-        return redirect(url_for("home"))
-
-    name = session[NAME_KEY]
-    return render_template("base.html")
+    # if NAME_KEY not in session:
+    #     return redirect(url_for("home"))
+    #
+    # name = session[NAME_KEY]
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
