@@ -1,17 +1,20 @@
-from flask import Flask, redirect,  render_template, session, url_for
-
+from flask import Flask, redirect,  render_template, session, url_for, request
+from client import Client
 NAME_KEY = 'name'
 
 app = Flask(__name__)
 
 app.secret_key = "hellomynameisvalandyouwontguessthis"
 
-# session[NAME_KEY] = "val"
-"""
-@app.route("/login")
+
+@app.route("/login", methods=["POST", "GET"])
 def login():
+    if request.method == "POST":
+        session[NAME_KEY] = request.form["name"]
+        return redirect(url_for("home"))
+
     return render_template("login.html")
-"""
+
 
 @app.route("/logout")
 def logout():
@@ -22,10 +25,9 @@ def logout():
 @app.route("/")
 @app.route("/home")
 def home():
-    # if NAME_KEY not in session:
-    #     return redirect(url_for("home"))
-    #
-    # name = session[NAME_KEY]
+    if NAME_KEY not in session:
+        return redirect(url_for("home"))
+
     return render_template("index.html")
 
 
