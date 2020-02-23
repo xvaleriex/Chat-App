@@ -4,17 +4,17 @@ from threading import Thread
 import time
 from person import Person
 
-#Global variables
+# Global variables
 HOST = '0.0.0.0'
 PORT = 5600
 ADDR = (HOST, PORT)
 MAX_CONNECTIONS = 10
 BUFSIZ = 512
 
-#GLOBAL VARIABLES
+# GLOBAL VARIABLES
 persons = []
 SERVER = socket(AF_INET, SOCK_STREAM)
-SERVER.bind(ADDR) #set up server
+SERVER.bind(ADDR)  # set up server
 
 
 def broadcast(msg, name1):
@@ -25,7 +25,10 @@ def broadcast(msg, name1):
     """
     for person in persons:
         client = person.client
-        client.send(bytes(name1, "utf8") + msg)
+        try:
+            client.send(bytes(name1, "utf8") + msg)
+        except Exception as e:
+            print("[EXCEPTION BROADCAST]", e)
 
 
 def client_communication(person):
@@ -35,29 +38,29 @@ def client_communication(person):
     :return: None
     """
     client = person.client
-    addr = person.addr
 
-    #get persons name
+    # get persons name
     client_name = client.recv(BUFSIZ).decode("utf8")
+    person.set_name(client_name)
+
     welcome = bytes(f"Welcome {client_name}!To quit chat, enter quit.\n", "utf8")
     joined = bytes(f"{client_name}has joined the chat!\n", "utf8")
     client.send(welcome)
-    broadcast(joined, "") #broadcast welcome message
+    broadcast(joined, "")  # broadcast welcome message
 
-    while True:
+    while True: #wait for any messages from person
         try:
-            msg = client.recv(BUFSIZ).decode("utf8")
-            if msg == 'quit\r\n':
-                client.send(bytes("{quit}", "utf8"))
-                broadcast(bytes(f"{client_name} has left the chat.\n", "utf8"), client_name)
+            msg = client.recv(BUFSIZ)
+            if msg == bytes("quit\r\n", "utf8"): #if message is quit, disconnect client
                 client.close()
                 persons.remove(person)
-                print(f"[DISCONNECTED] {name}")
-                break
-            else:
-                broadcast(bytes(msg, "utf8"), client_name + ": ")
+                broadcast(bytes(f"{client_name} has left the chat.\n", "utf8"), "")
+                print(f"[DISCONNECTED] {client_name}")
+            else: # otherwise send message to all clients
+                broadcast(msg, client_name + ": ")
+                print(f"{name}: ", msg.decode("utf8"))
         except Exception as e:
-            print("[EXCEPTION]", e)
+            print("[EXCEPTION COMMUNICATION]", e)
             break
 
 
@@ -72,18 +75,19 @@ def wait_for_connection():
     while run:
         try:
             client, addr = SERVER.accept()
-            person = Person(addr, client)
+            person = Person(addr, client) # create new person for connection
             persons.append(person)
+
             print(f"[CONNECTION ] {addr} connected to the server at {time.time()}")
             Thread(target=client_communication, args=(person,)).start()
         except Exception as e:
-            print("[EXCEPTION]", e)
+            print("[EXCEPTION WAIT FOR CONN]", e)
             run = False
     print("SERVER CRASHED")
 
 
 if __name__ == "__main__":
-    SERVER.listen(MAX_CONNECTIONS) #listen for connections
+    SERVER.listen(MAX_CONNECTIONS)  # listen for connections
     print("[STARTED] Waiting for connection...")
     ACCEPT_THREAD = Thread(target=wait_for_connection)
     ACCEPT_THREAD.start()
