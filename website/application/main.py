@@ -10,7 +10,8 @@ app.secret_key = "hellomynameisvalandyouwontguessthis"
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        session[NAME_KEY] = request.form["name"]
+        print(request.form)
+        session[NAME_KEY] = request.form["inputName1"]
         return redirect(url_for("home"))
 
     return render_template("login.html")

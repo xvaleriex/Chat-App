@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Login{% endblock %}
 {% block content %}
-<h1>TEST</h1>
-<form>
-    <button id="test" type="button" class="btn btn-primary">Primary</button>
+<form action="#" method="POST">
+  <fieldset>
+    <legend>Hi there!</legend>
+    <div class="form-group">
+      <label for="inputName1">What's your name?</label>
+      <input type="text" class="form-control" name="inputName1" id="inputName1" aria-describedby="nameHelp" placeholder="Enter name">
+      <small id="nameHelp" class="form-text text-muted">And you can start chatting;).</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </fieldset>
 </form>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='index.js')}}"></script>
 {% endblock %}
