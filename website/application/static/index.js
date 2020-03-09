@@ -1,6 +1,9 @@
 $(function() {
-          $('a#test').bind('click', function() {
+          $('#sendBtn').bind('click', function() {
+          var value = document.getElementById("msgText").value
+          console.log(value)
             $.getJSON('/run',
+            {val:value},
                 function(data) {
               //do nothing
             });

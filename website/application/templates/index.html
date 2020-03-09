@@ -4,11 +4,19 @@
 {% block content %}
 
 {% if login %}
-{% block messageGreen %}{{session["name"]}} Logged in! {% endblock %}
+{% block messageGreen %}{{session["name"]}} logged in {% endblock %}
 {% endif %}
 <h1>TEST</h1>
-<form>
-    <button id="test" type="button" class="btn btn-primary">Primary</button>
-</form>
 
+ <div class="input-group-messagetext">
+     <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="start typing..." id="msgText">
+      <button class="btn btn-outline-primary" id="sendBtn" type="submit">Send</button>
+    </form>
+</div>
+
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='index.js')}}"></script>
 {% endblock %}
