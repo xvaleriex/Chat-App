@@ -2,6 +2,10 @@
 
 {% block title %}Home{% endblock %}
 {% block content %}
+
+{% if login %}
+{% block messageGreen %}{{session["name"]}} Logged in! {% endblock %}
+{% endif %}
 <h1>TEST</h1>
 <form>
     <button id="test" type="button" class="btn btn-primary">Primary</button>
