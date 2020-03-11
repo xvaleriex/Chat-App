@@ -21,7 +21,7 @@ class Client:
         Init object and send name to server
         :param name: str
         """
-        signal(SIGPIPE, SIG_DFL)
+        # signal(SIGPIPE, SIG_DFL)
         self.client_socket = socket(AF_INET, SOCK_STREAM)
         self.client_socket.connect(self.ADDR)
         self.messages = []
